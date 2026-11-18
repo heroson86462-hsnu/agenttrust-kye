@@ -208,3 +208,23 @@ def test_background_auto_harvest_scheduler_lifecycle(monkeypatch):
             assert data["auto_harvest_interval_sec"] == 60
             assert data["harvest_telemetry"]["runs_completed"] >= 1
             assert data["harvest_telemetry"]["last_harvest_summary"]["harvested_total"] == 3
+
+
+def test_shields_io_dynamic_badge_endpoint(monkeypatch):
+    with tempfile.TemporaryDirectory() as tmp:
+        monkeypatch.setenv("KYE_DB_PATH", os.path.join(tmp, "badge.db"))
+        from agenttrust_kye.server import app
+
+        with TestClient(app) as client:
+            ok = client.get("/v1/badge/cloudflare-docs-remote-mcp")
+            assert ok.status_code == 200
+            body = ok.json()
+            assert body["schemaVersion"] == 1
+            assert body["label"] == "AgentTrust KYE"
+            assert body["color"] == "brightgreen"
+            assert "A+" in body["message"]
+
+            missing = client.get("/v1/badge/unknown-xyz")
+            assert missing.status_code == 200
+            assert missing.json()["message"] == "unindexed"
+            assert missing.json()["color"] == "lightgrey"

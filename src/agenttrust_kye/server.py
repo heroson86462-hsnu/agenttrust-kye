@@ -171,6 +171,39 @@ def public_leaderboard(limit: int = Query(25, ge=1, le=100)):
     )
 
 
+@app.get("/v1/badge/{slug}")
+def shields_io_badge_endpoint(slug: str):
+    """Shields.io Endpoint JSON v1 for live README badges (cached at Cloudflare Edge for 300s)."""
+    conn = connect_db()
+    row = conn.execute(
+        "SELECT kye_score, security_grade FROM kye_endpoints WHERE slug = ?",
+        (slug,),
+    ).fetchone()
+    conn.close()
+    if not row:
+        return JSONResponse(
+            content={
+                "schemaVersion": 1,
+                "label": "AgentTrust KYE",
+                "message": "unindexed",
+                "color": "lightgrey",
+            },
+            headers={"Cache-Control": "public, max-age=60, s-maxage=120"},
+        )
+    score = int(row["kye_score"])
+    grade = str(row["security_grade"])
+    color = "brightgreen" if score >= 82 else ("yellow" if score >= 55 else "red")
+    return JSONResponse(
+        content={
+            "schemaVersion": 1,
+            "label": "AgentTrust KYE",
+            "message": f"{score}/100 ({grade})",
+            "color": color,
+        },
+        headers={"Cache-Control": "public, max-age=120, s-maxage=300"},
+    )
+
+
 @app.get("/v1/kye/check")
 def check_endpoint_kye(
     request: Request,

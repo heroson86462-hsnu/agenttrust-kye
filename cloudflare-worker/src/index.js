@@ -30,8 +30,8 @@ export default {
       });
     }
 
-    // Edge-cache public discovery & viral leaderboard routes for 60s
-    if (request.method === "GET" && EDGE_CACHEABLE_PATHS.has(url.pathname)) {
+    // Edge-cache public discovery, dynamic badges & viral leaderboard routes
+    if (request.method === "GET" && (EDGE_CACHEABLE_PATHS.has(url.pathname) || url.pathname.startsWith("/v1/badge/"))) {
       const cache = caches.default;
       let response = await cache.match(request);
       if (!response) {
