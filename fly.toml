@@ -1,0 +1,43 @@
+# Fly.io Production Deployment Config (Zero Cold-Start Configuration)
+# Deploy with: fly launch --copy-config && fly volumes create kye_data --region nrt --size 3 && fly deploy
+
+app = "agenttrust-kye-oracle"
+primary_region = "nrt" # Tokyo (add `iad` US-East & `fra` Frankfurt via `fly scale count`)
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  KYE_DB_PATH = "/data/kye_production.db"
+  KYE_TREASURY_WALLET = "0x5ab8fBd41e0691876fE3cC3b0dF62A901C2cD044"
+  X402_FACILITATOR_URL = "https://facilitator.payai.network"
+  KYE_PRICE_USDC = "0.005"
+  KYE_IDEMPOTENCY_TTL_SEC = "600"
+  KYE_AUTO_HARVEST_INTERVAL_SEC = "7200"
+  KYE_AUTO_HARVEST_LIMIT = "30"
+
+[mounts]
+  source = "kye_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # CRITICAL FIRST-PRINCIPLES FIX: Never scale to 0! Prevents x402 Cold-Start Amplification timeouts!
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/healthz"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

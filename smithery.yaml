@@ -1,0 +1,24 @@
+# Smithery Marketplace Manifest (https://smithery.ai)
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      kyeOracleUrl:
+        type: string
+        default: "https://agenttrust-kye-edge-gateway.a2a-data-matrix.workers.dev"
+        description: "Cloud AgentTrust KYE Oracle base URL for live multi-region canary scores."
+      kyePrepaidBearer:
+        type: string
+        description: "Optional prepaid enterprise token or x402 authorization header."
+  commandFunction: |-
+    (config) => ({
+      command: 'uvx',
+      args: ['agenttrust-kye'],
+      env: {
+        KYE_ORACLE_URL: config.kyeOracleUrl || 'https://agenttrust-kye-edge-gateway.a2a-data-matrix.workers.dev',
+        ...(config.kyePrepaidBearer ? { KYE_PREPAID_BEARER: config.kyePrepaidBearer } : {})
+      }
+    })
+  exampleConfig:
+    kyeOracleUrl: "https://agenttrust-kye-edge-gateway.a2a-data-matrix.workers.dev"

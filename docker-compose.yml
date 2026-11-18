@@ -1,0 +1,32 @@
+services:
+  kye-oracle-api:
+    build: .
+    container_name: agenttrust-kye-api
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - KYE_DB_PATH=/data/kye_production.db
+      - KYE_TREASURY_WALLET=${KYE_TREASURY_WALLET:-0x5ab8fBd41e0691876fE3cC3b0dF62A901C2cD044}
+      - X402_FACILITATOR_URL=${X402_FACILITATOR_URL:-https://facilitator.payai.network}
+      - KYE_PRICE_USDC=0.005
+    volumes:
+      - kye_nvme_data:/data
+    restart: unless-stopped
+
+  kye-canary-harvester:
+    build: .
+    container_name: agenttrust-kye-harvester
+    depends_on:
+      - kye-oracle-api
+    environment:
+      - KYE_DB_PATH=/data/kye_production.db
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+    volumes:
+      - kye_nvme_data:/data
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["while true; do agenttrust-kye-harvest --limit 40 --report /data/PUBLIC_MCP_TRUST_REPORT.md; sleep 900; done"]
+    restart: unless-stopped
+
+volumes:
+  kye_nvme_data:

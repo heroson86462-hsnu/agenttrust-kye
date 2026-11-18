@@ -1,0 +1,41 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.heroson86462-hsnu/agenttrust-kye",
+  "description": "Know-Your-Endpoint MCP firewall: checks uptime, Rug-Pull mutations, poisoning & x402 traps.",
+  "status": "active",
+  "repository": {
+    "url": "https://github.com/heroson86462-hsnu/agenttrust-kye",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "agenttrust-kye",
+      "version": "1.0.0",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "KYE_ORACLE_URL",
+          "description": "Optional remote AgentTrust KYE Cloud Oracle endpoint",
+          "isRequired": false,
+          "default": "https://agenttrust-kye-edge-gateway.a2a-data-matrix.workers.dev"
+        },
+        {
+          "name": "KYE_PREPAID_BEARER",
+          "description": "Optional prepaid enterprise session token or x402 wallet signer string",
+          "isRequired": false
+        }
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://agenttrust-kye-edge-gateway.a2a-data-matrix.workers.dev/mcp"
+    }
+  ]
+}

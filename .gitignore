@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+.pytest_cache/
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+.env
+PUBLIC_MCP_TRUST_REPORT.md
+LAST_VERIFICATION_LOG.txt
+node_modules/
+.wrangler/

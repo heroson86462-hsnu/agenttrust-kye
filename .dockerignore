@@ -1,0 +1,17 @@
+.venv/
+.git/
+.pytest_cache/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+.env
+cloudflare-worker/
+tests/
+LAST_VERIFICATION_LOG.txt
+PUBLIC_MCP_TRUST_REPORT.md

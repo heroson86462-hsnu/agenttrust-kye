@@ -1,0 +1,8 @@
+name = "agenttrust-kye-edge-gateway"
+main = "src/index.js"
+compatibility_date = "2026-07-01"
+
+[vars]
+ORIGIN_BASE_URL = "https://agenttrust-kye-oracle.fly.dev"
+
+# Bind custom domain e.g. kye.helloyunivia.com in Cloudflare Dashboard -> Workers -> Triggers

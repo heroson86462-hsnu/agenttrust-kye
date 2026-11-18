@@ -1,0 +1,7 @@
+{
+  "name": "agenttrust-kye-edge-gateway",
+  "private": true,
+  "devDependencies": {
+    "wrangler": "4.80.0"
+  }
+}

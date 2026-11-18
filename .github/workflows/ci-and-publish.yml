@@ -1,0 +1,42 @@
+name: CI & Publish to PyPI + MCP Registry
+
+on:
+  push:
+    branches: ["main"]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  test-and-security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install package & dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+      - name: Run full pytest suite (SSRF, Poisoning, x402, Idempotency, Stdio MCP)
+        run: pytest -v
+      - name: Validate server.json syntax
+        run: python -c "import json; d=json.load(open('server.json')); assert d['name']=='io.github.heroson86462-hsnu/agenttrust-kye'"
+
+  publish-pypi:
+    needs: test-and-security-audit
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # PyPI Trusted Publishing (OIDC, zero API token secret needed!)
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build wheel and sdist
+        run: |
+          pip install build
+          python -m build
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
