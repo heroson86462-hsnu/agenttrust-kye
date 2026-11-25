@@ -60,6 +60,15 @@ verdict = guard_endpoint("cloudflare-docs-remote-mcp", min_kye_score=75)
 
 ---
 
+## 📊 6-Day / 72-Cycle Live Telemetry Dataset (`2,160` Remote Probes)
+
+We continuously probe public MCP servers from the Official MCP Registry and GitHub topics every 2 hours (`2,160` remote handshakes across `69` indexed servers in 144 hours):
+* **41.2% (`14/34`)** of Official Registry `streamable-http` servers exceeded **500ms** on stateless JSON-RPC discovery (`8.8%` exceeded **1,000ms**, up to `1,753ms`), while warm edge servers responded in **35ms–82ms**.
+* **Full Empirical Report**: [PUBLIC_MCP_TRUST_REPORT.md](PUBLIC_MCP_TRUST_REPORT.md)
+* **Companion Quad-Oracle Repo** *(Schedule-A/EmpCo, GSA SaaS Floors, FMC 46 CFR 541, NDAA §5949)*: https://github.com/heroson86462-hsnu/a2a-matrix-quad-oracle
+
+---
+
 ## 🏅 Add the "KYE Verified" Badge to Your MCP Server
 
 Maintainers of reliable MCP servers can embed live KYE trust status in their README:
